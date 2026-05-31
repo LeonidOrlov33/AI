@@ -1,11 +1,14 @@
 from __future__ import annotations
 
-import html
+import importlib.util
 
-try:
+if importlib.util.find_spec("PyQt6") is None:
+    raise RuntimeError("PyQt6 is required for the GUI. Install with: pip install -e '.[gui]'")
+
+if importlib.util.find_spec("PyQt6.QtWebEngineWidgets") is not None:
     from PyQt6.QtWebEngineWidgets import QWebEngineView
     WEBENGINE_AVAILABLE = True
-except Exception:  # optional GUI dependency
+else:
     from PyQt6.QtWidgets import QTextEdit as QWebEngineView  # type: ignore
     WEBENGINE_AVAILABLE = False
 

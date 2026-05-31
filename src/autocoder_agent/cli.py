@@ -2,23 +2,22 @@ from __future__ import annotations
 
 import argparse
 import asyncio
-
-try:
-    from rich.console import Console
-except Exception:
-    class Console:  # type: ignore[no-redef]
-        def log(self, message: str) -> None:
-            print(message)
-
-        def print_json(self, data) -> None:
-            import json
-            if hasattr(data, "model_dump"):
-                data = data.model_dump(mode="json")
-            print(json.dumps(data, ensure_ascii=False, indent=2))
+import json
 
 from .core.config import load_config
-from .core.events import AgentEvent, EventBus
+from .core.events import EventBus
 from .core.pipeline import AutocoderPipeline
+
+
+class Console:
+    def log(self, message: str) -> None:
+        print(message)
+
+    def print_json(self, data) -> None:
+        if hasattr(data, "model_dump"):
+            data = data.model_dump(mode="json")
+        print(json.dumps(data, ensure_ascii=False, indent=2))
+
 
 console = Console()
 

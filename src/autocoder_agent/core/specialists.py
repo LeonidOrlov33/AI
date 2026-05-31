@@ -83,7 +83,7 @@ class Interviewer:
             ],
             run_commands=["python -m app.main"],
             test_commands=["python -m unittest discover -s tests"],
-            acceptance_criteria=["All tests pass", "API exposes OpenAPI docs", "Project starts locally"],
+            acceptance_criteria=["All tests pass", "All declared API endpoints respond", "Project starts locally"],
         )
 
 

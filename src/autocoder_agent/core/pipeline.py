@@ -43,12 +43,15 @@ class AutocoderPipeline:
             self.events.emit(Stage.TESTING, f"Тестировщик запускает проверку, попытка {attempt}")
             ai_issues = await self.tester.analyze(self.workspace, spec)
             local_report = self.tester.run_local_checks(self.workspace, spec)
-            issues = ai_issues + local_report.issues
-            final_report = TestReport(success=not issues, attempts=attempt, issues=issues, logs=local_report.logs)
-            self.events.emit(Stage.TESTING, local_report.logs or "Локальные проверки завершены", final_report)
+            endpoint_report = self.tester.verify_local_endpoints(self.workspace, spec)
+            browser_report = self.tester.run_playwright_smoke(self.workspace, spec)
+            issues = ai_issues + local_report.issues + endpoint_report.issues + browser_report.issues
+            logs = "\n\n".join(part for part in [local_report.logs, endpoint_report.logs, browser_report.logs] if part)
+            final_report = TestReport(success=not issues, attempts=attempt, issues=issues, logs=logs)
+            self.events.emit(Stage.TESTING, logs or "Локальные проверки завершены", final_report)
             if not issues:
                 self.events.emit(Stage.DEPLOY, "Локальные проверки успешны, запускается деплой Render")
-                url, deploy_log = await self.tester.deploy_render(self.workspace)
+                url, deploy_log = await self.tester.deploy_render(self.workspace, spec)
                 verify_log = await self.tester.verify_deployed(url, spec)
                 final_report.deployed_url = url
                 final_report.logs += f"\n\n{deploy_log}\n{verify_log}"
