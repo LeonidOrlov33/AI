@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "autocoder-agent"
+version = "0.1.0"
+description = "PyQt6 AI agent with interviewer/programmer/tester specialists for automatic Python project generation."
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [{ name = "Autocoder Agent" }]
+license = { text = "MIT" }
+dependencies = [
+  "openai>=1.0",
+  "httpx>=0.27",
+]
+
+[project.optional-dependencies]
+gui = [
+  "PyQt6>=6.7",
+  "PyQt6-WebEngine>=6.7",
+]
+test = [
+  "pytest>=8.0",
+  "playwright>=1.44",
+]
+dev = [
+  "autocoder-agent[gui,test]",
+]
+
+[project.scripts]
+autocoder-agent = "autocoder_agent.cli:main"
+autocoder-agent-gui = "autocoder_agent.gui.app:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

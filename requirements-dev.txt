@@ -1,0 +1,2 @@
+# Полная среда разработки: GUI + тесты + Playwright smoke.
+-e .[dev]
